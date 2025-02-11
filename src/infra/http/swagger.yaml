@@ -1,0 +1,545 @@
+openapi: 3.0.0
+info:
+  title: API de Gerenciamento de Pedidos
+  description: Documentação da API para gerenciamento de clientes, pedidos e produtos.
+  version: 1.0.0
+
+servers:
+paths:
+  /clients:
+    post:
+      tags:
+        - Gerenciamento de cliente
+      summary: Criar um novo cliente
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                cpf:
+                  type: string
+                name:
+                  type: string
+                email:
+                  type: string
+              required:
+                - cpf
+                - name
+                - email
+      responses:
+        '200':
+          description: Cliente criado com sucesso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  account_id:
+                    type: string
+                  name:
+                    type: string
+                  email:
+                    type: string
+                  cpf:
+                    type: string
+        '422':
+          description: Erro de validação
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+              examples:
+                emailRegistered:
+                  summary: Email já registrado
+                  value:
+                    message: "Email already registered"
+                invalidName:
+                  summary: Nome inválido
+                  value:
+                    message: "Invalid Name"
+                invalidEmail:
+                  summary: Email inválido
+                  value:
+                    message: "Invalid Email"
+                invalidCpf:
+                  summary: CPF inválido
+                  value:
+                    message: "Invalid CPF"
+  /clients/{client_id}:
+    get:
+      tags:
+        - Gerenciamento de cliente
+      summary: Obter cliente por ID
+      parameters:
+        - in: path
+          name: client_id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Detalhes do cliente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  account_id:
+                    type: string
+                  name:
+                    type: string
+                  email:
+                    type: string
+                  cpf:
+                    type: string
+        '422':
+          description: Cliente não encontrado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Client not found"
+  /clients/cpf/{cpf}:
+    get:
+      tags:
+        - Gerenciamento de cliente
+      summary: Obter cliente por CPF
+      parameters:
+        - in: path
+          name: cpf
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Detalhes do cliente por CPF
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  account_id:
+                    type: string
+                  name:
+                    type: string
+                  email:
+                    type: string
+                  cpf:
+                    type: string
+        '422':
+          description: Cliente não encontrado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Client not found"
+  /orders:
+    post:
+      tags:
+        - Gerenciamento de pedido    
+      summary: Criar um novo pedido
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                client_id:
+                  type: string
+                products:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      product_id:
+                        type: string
+                      quantity:
+                        type: integer
+              required:
+                - client_id
+                - products
+      responses:
+        '200':
+          description: Pedido criado com sucesso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  order_id:
+                    type: string
+        '422':
+          description: Erro de validação
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Client not found or Some product does not exist"
+              examples:
+                clientNotFound:
+                  summary: Cliente não encontrado
+                  value:
+                    message: "Client not found"
+                productNotFound:
+                  summary: Algum produto não foi encontrado
+                  value:
+                    message: "Some product does not exist"
+                quantityIsZero:        
+                  summary: Quantidade do produto é 0
+                  value:
+                    message: "Quantity must be bigger than 0"
+    get:
+      tags:
+        - Gerenciamento de pedido
+      summary: Obter todos os pedidos
+      responses:
+        '200':
+          description: Lista de pedidos
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    order_id:
+                      type: string
+                    total_price:
+                      type: number
+                    status:
+                      type: string
+                    client_name:
+                      type: string
+                    products:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          product_id:
+                            type: string
+                          quantity:
+                            type: integer
+                          name:
+                            type: string
+                          description:
+                            type: string
+                          price:
+                            type: number
+                          category:
+                            type: string
+  /orders/{order_id}:
+    get:
+      tags:
+        - Gerenciamento de pedido
+      summary: Obter pedido por ID
+      parameters:
+        - in: path
+          name: order_id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Detalhes do pedido
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  order_id:
+                    type: string
+                  total_price:
+                    type: number
+                  status:
+                    type: string
+                  client_name:
+                    type: string
+                  products:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        product_id:
+                          type: string
+                        quantity:
+                          type: integer
+                        name:
+                          type: string
+                        description:
+                          type: string
+                        price:
+                          type: number
+                        category:
+                          type: string
+        '422':
+          description: Erro de validação ao recuperar o pedido, pedido não encontrado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Order not found" 
+
+  /orders/status/{order_id}:
+    put:
+      tags:
+        - Gerenciamento de pedido
+      summary: Atualizar status do pedido
+      parameters:
+        - in: path
+          name: order_id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: string
+              required:
+                - status
+      responses:
+        '200':
+          description: Status do pedido atualizado com sucesso
+        '422':
+          description: Erro de validação
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Order not found or Invalid status"
+              examples:
+                orderNotFound:
+                  summary: Pedido não encontrado
+                  value:
+                    message: "Order not found"
+                invalidStatus:
+                  summary: Status inválido
+                  value:
+                    message: "Invalid status"
+  /products:
+    post:
+      tags:
+        - Gerenciamento de pedido
+      summary: Criar um novo produto
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                description:
+                  type: string
+                price:
+                  type: number
+                category:
+                  type: string
+              required:
+                - name
+                - description
+                - price
+                - category
+      responses:
+        '200':
+          description: Produto criado com sucesso
+  /products/{product_id}:
+    put:
+      tags:
+        - Gerenciamento de pedido
+      summary: Atualizar produto existente
+      parameters:
+        - in: path
+          name: product_id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                description:
+                  type: string
+                price:
+                  type: number
+                category:
+                  type: string
+              required:
+                - name
+                - description
+                - price
+                - category
+      responses:
+        '200':
+          description: Produto atualizado com sucesso
+  /products/{product_id}:
+    delete:
+      tags:
+        - Gerenciamento de pedido
+      summary: Remover produto por ID
+      parameters:
+        - in: path
+          name: product_id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Produto removido com sucesso
+  /products/{category}:
+    get:
+      tags:
+        - Gerenciamento de pedido
+      summary: Obter todos os produtos por categoria
+      parameters:
+        - in: path
+          name: category
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Lista de produtos por categoria
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    product_id:
+                      type: string
+                    name:
+                      type: string
+                    description:
+                      type: string
+                    price:
+                      type: number
+                    category:
+                      type: string
+  /payments:
+    post:
+      tags:
+        - Processamento do pagamento
+      summary: Criar um pagamento
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                order_id:
+                  type: string
+                payment_method:
+                  type: string
+              required:
+                - order_id
+                - payment_method
+      responses:
+        '200':
+          description: Pagamento criado e processado com sucesso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  payment_id:
+                    type: string
+                  status:
+                    type: string
+                    description: Status do pagamento (e.g., approved, rejected)
+        '422':
+          description: Erro de validação
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+              examples:
+                orderNotFound:
+                  summary: Pedido não encontrado
+                  value:
+                    message: "Order not found"
+                invalidPaymentMethodFormat:
+                  summary: Método de pagamento inválido
+                  value:
+                    message: "Invalid Payment Method"
+                unsupportedPaymentMethod:
+                  summary: Método de pagamento não suportado
+                  value:
+                    message: "Payment Method not supported, only 'Pix' is allowed"
+  /payments/status/{order_id}:
+    get:
+      tags:
+        - Processamento do pagamento
+      summary: Obter status do pagamento por ID do pedido
+      parameters:
+        - in: path
+          name: order_id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Status do pagamento retornado com sucesso
+          content:
+            application/json:
+              schema:
+                type: string
+              examples:
+                status:
+                  value: "approved"
+                  description: "O status do pagamento (e.g., approved, rejected)"
+        '422':
+          description: Erro de validação
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+              examples:
+                orderNotFound:
+                  summary: Pedido não encontrado
+                  value:
+                    message: "Order not found"
+                paymentNotFound:
+                  summary: Pagamento não encontrado
+                  value:
+                    message: "Payment not found"
+          
