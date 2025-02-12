@@ -65,5 +65,5 @@ const orderGateway = new OrderGatewayHttp(new AxiosAdapter());
 const createPayment = new CreatePayment(paymentRepository, orderGateway); 
 const getPaymentStatus = new GetPaymentStatus(paymentRepository, orderGateway);
 new PaymentController(httpServer, createPayment, getPaymentStatus); 
-
+console.log("test")
 httpServer.listen(port);
