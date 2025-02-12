@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ms-client-deployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: ms-payment
+  template:
+    metadata:
+      labels:
+        app: ms-payment
+    spec:
+      containers:
+      - name: ms-payment-container
+        image: felipepxavier/api-ms-payment:latest
+        ports:
+        - containerPort: 3000
+        envFrom:
+        - configMapRef:
+            name: ms-payment-config
+        - secretRef:
+            name: ms-payment-secrets
