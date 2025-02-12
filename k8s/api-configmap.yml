@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ms-payment-config
+data:
+  DB_HOST: order-manager-rds-instance.cdmeg0icuylz.us-east-1.rds.amazonaws.com
+  DB_NAME: "order_manager_instance_db"
+  DB_PORT: "5432"
+  DB_CLIENT: pg
+  NODE_ENV: "development"

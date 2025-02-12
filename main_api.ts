@@ -23,68 +23,17 @@ const defaultConfigPostgres = {
 
 const dbPostgres = knex(defaultConfigPostgres);
 async function createDatabase() {
-  const databases = await dbPostgres.raw("SELECT datname FROM pg_database WHERE datname = 'order_manager_db';");
+  const databases = await dbPostgres.raw("SELECT datname FROM pg_database WHERE datname = 'ms_payment_db';");
   if (databases.rows.length === 0) {
-      await dbPostgres.raw('CREATE DATABASE "order_manager_db";');
-      console.log("Banco de dados order_manager_db' criado.");
+      await dbPostgres.raw('CREATE DATABASE "ms_payment_db";');
+      console.log("Banco de dados ms_payment_db' criado.");
   } else {
-      console.log("Banco de dados 'order_manager_db' já existe.");
+      console.log("Banco de dados 'ms_payment_db' já existe.");
   }
 }
 
 async function createTables() {
   const db = knex(defaultConfig);
-    // Criar tabela de clientes
-    const clientsExists = await db.schema.hasTable('clients');
-    if (!clientsExists) {
-      await db.schema.createTable('clients', (table) => {
-        table.uuid('account_id').primary();
-        table.string('name').notNullable();
-        table.string('email').notNullable();
-        table.string('cpf').notNullable();
-        table.timestamp('created_at').defaultTo(db.fn.now());
-      });
-      console.log("Tabela 'clients' criada");
-    }
-  
-    // Criar tabela de produtos
-    const productsExists = await db.schema.hasTable('products');
-    if (!productsExists) {
-      await db.schema.createTable('products', (table) => {
-        table.uuid('product_id').primary();
-        table.string('name').notNullable();
-        table.string('description').notNullable();
-        table.float('price').notNullable();
-        table.string('category').notNullable();
-        table.timestamp('created_at').defaultTo(db.fn.now());
-      });
-      console.log("Tabela 'products' criada");
-    }
-  
-    // Criar tabela de pedidos
-    const ordersExists = await db.schema.hasTable('orders');
-    if (!ordersExists) {
-      await db.schema.createTable('orders', (table) => {
-        table.uuid('order_id').primary();
-        table.uuid('client_id').nullable().references('account_id').inTable('clients').onDelete('CASCADE');
-        table.string('status').notNullable();
-        table.timestamp('created_at').notNullable();
-      });
-      console.log("Tabela 'orders' criada");
-    }
-  
-    // Criar tabela de itens do pedido
-    const orderItemsExists = await db.schema.hasTable('order_items');
-    if (!orderItemsExists) {
-      await db.schema.createTable('order_items', (table) => {
-        table.uuid('order_item_id').primary();
-        table.uuid('order_id').references('order_id').inTable('orders').onDelete('CASCADE');
-        table.uuid('product_id').references('product_id').inTable('products');
-        table.integer('quantity').notNullable();
-        table.float('price').notNullable();
-      });
-      console.log("Tabela 'order_items' criada");
-    }
 
     // Criar tabela de pagamentos
     const paymentsExists = await db.schema.hasTable('payments');
