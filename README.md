@@ -1,6 +1,6 @@
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=felipe-pedroso-soat-architecture-fase-4_ms-payment&metric=coverage&token=36efc099813e06f029e953ee17ca2464a98dccdd)](https://sonarcloud.io/summary/new_code?id=felipe-pedroso-soat-architecture-fase-4_ms-payment)
 
-# order-payment
+# ms-payment
 
 ## Descrição do Projeto
 
