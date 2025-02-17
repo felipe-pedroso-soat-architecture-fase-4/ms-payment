@@ -16,30 +16,6 @@ Este projeto foi fundamentado no event-storming realizado na plataforma Lucid. E
 
 Confira o diagrama detalhado em: [Lucidchart Event-Storming](https://lucid.app/lucidchart/edbd91cc-478d-4b5e-a72f-1013f450f952/view).
 
-## Iniciando o Projeto
-
-Para iniciar o projeto, você pode usar o Docker Compose para configurar e executar os serviços necessários. Siga estas etapas:
-
-1. **Certifique-se de que o Docker e o Docker Compose estão instalados em seu sistema.**
-
-2. **Clone o repositório do projeto:**
-   ```bash
-   git clone https://github.com/felipepxavier/order-manager-api.git
-   cd order-manager-api
-   ```
-
-3. **Inicie os serviços** do projeto executando o comando Docker Compose:
-
-    ```bash
-    docker-compose up
-    ```
-
-4. **Acesse a API e a documentação** no seu navegador:
-
-    - **API**: http://localhost:3000
-    - **Documentação Swagger**: http://localhost:3000/api-docs
-
-
 ## Sobre Este Projeto
 
 Este projeto faz parte da especialização em **Arquitetura de Software** da FIAP. Desenvolvido como parte do curso, ele utiliza práticas e padrões avançados de design de software.
