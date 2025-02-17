@@ -40,7 +40,7 @@ async function createTables() {
     if (!paymentsExists) {
       await db.schema.createTable('payments', (table) => {
         table.uuid('payment_id').primary();
-        table.uuid('order_id').references('order_id').inTable('orders').onDelete('CASCADE');
+        table.uuid('order_id').notNullable();
         table.string('payment_method').notNullable();
         table.float('amount').notNullable();
         table.string('status').notNullable();

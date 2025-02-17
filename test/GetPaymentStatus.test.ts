@@ -51,13 +51,13 @@ describe('GetPaymentStatus', () => {
             ]
         };
        const orderCreated = await orderGateway.createOrder(orderData);
-
         const paymentData = {
             order_id: orderCreated.order_id,
             payment_method: 'Pix'
         };
 
         const payment = await createPayment.execute(paymentData);
+        
         expect(payment.payment_id).toBeDefined();
         expect(payment.status).toBe('approved');
     

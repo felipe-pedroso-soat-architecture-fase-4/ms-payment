@@ -1,0 +1,65 @@
+name: Run API Tests
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_DB: test_db
+          POSTGRES_USER: test_user
+          POSTGRES_PASSWORD: test_password
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U test_user -d test_db"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    
+    env:
+      NODE_ENV: test
+      DB_HOST: 127.0.0.1
+      DB_PORT: 5432
+      DB_NAME: test_db
+      DB_USER: test_user
+      DB_PASSWORD: test_password
+      API_URL: http://localhost
+      API_PORT: 3000
+      DB_CLIENT: pg
+    
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Wait for PostgreSQL to be ready
+        run: |
+              timeout 20s bash -c 'until pg_isready -h 127.0.0.1 -U $DB_USER -d $DB_NAME; do sleep 1; done'
+
+      - name: Install Dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Start API and Run Tests
+        run: |
+          yarn dev &
+          sleep 5 
+          yarn test:coverage
+
+      - name: SonarCloud Scan
+        uses: sonarSource/sonarcloud-github-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
